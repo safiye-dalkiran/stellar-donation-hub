@@ -53,6 +53,7 @@ export default function App() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [donations, setDonations] = useState<Donation[]>([])
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   // Toast States
   const [toastMessage, setToastMessage] = useState('')
@@ -171,8 +172,8 @@ export default function App() {
         const newBal = await fetchXlmBalance(address)
         setBalance(newBal)
 
-        // Refresh the page data briefly to fetch updated project balance
-        window.location.reload()
+        // Trigger dynamic project balance refresh
+        setRefreshTrigger(prev => prev + 1)
       } else {
         showNotification('İşlem başarısız oldu.', 'error')
       }
@@ -198,6 +199,7 @@ export default function App() {
           onDonate={handleDonate}
           onAddProject={handleAddProject}
           isWalletConnected={address !== null}
+          refreshTrigger={refreshTrigger}
         />
         <DonationHistory donations={donations} />
       </main>

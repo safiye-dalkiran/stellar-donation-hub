@@ -15,9 +15,10 @@ interface ProjectCardProps {
   project: Project
   onDonate: (projectId: string, amount: string, destination: string) => void
   isWalletConnected: boolean
+  refreshTrigger?: number
 }
 
-export default function ProjectCard({ project, onDonate, isWalletConnected }: ProjectCardProps) {
+export default function ProjectCard({ project, onDonate, isWalletConnected, refreshTrigger }: ProjectCardProps) {
   const [balance, setBalance] = useState<string>('0.0000')
   const [loadingBalance, setLoadingBalance] = useState<boolean>(true)
   const [amount, setAmount] = useState<string>('')
@@ -37,7 +38,7 @@ export default function ProjectCard({ project, onDonate, isWalletConnected }: Pr
 
   useEffect(() => {
     fetchProjectOnChainBalance()
-  }, [project.destinationAddress])
+  }, [project.destinationAddress, refreshTrigger])
 
   const numericBalance = parseFloat(balance)
   const progress = Math.min((numericBalance / project.targetAmount) * 100, 100)

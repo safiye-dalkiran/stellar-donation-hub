@@ -17,9 +17,10 @@ interface ProjectGridProps {
   onDonate: (projectId: string, amount: string, destination: string) => void
   onAddProject: (project: Omit<Project, 'id' | 'isCustom'>) => void
   isWalletConnected: boolean
+  refreshTrigger: number
 }
 
-export default function ProjectGrid({ projects, onDonate, onAddProject, isWalletConnected }: ProjectGridProps) {
+export default function ProjectGrid({ projects, onDonate, onAddProject, isWalletConnected, refreshTrigger }: ProjectGridProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
@@ -41,6 +42,7 @@ export default function ProjectGrid({ projects, onDonate, onAddProject, isWallet
             project={project}
             onDonate={onDonate}
             isWalletConnected={isWalletConnected}
+            refreshTrigger={refreshTrigger}
           />
         ))}
       </div>
