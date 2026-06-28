@@ -74,23 +74,18 @@ npm run build
 npm run test:run
 ```
 
----
-
 ## 📸 Screenshots (White Belt Requirements)
 
 *Please replace the placeholders below with actual screenshots of your running application for submission:*
 
-### 1. Wallet Connected State & Balance Display
-*Displays the header with the connected Freighter address and live XLM balance.*
+### 1. Wallet Connected State
+![Wallet Connected State](./public/screenshots/wallet-connected.png)
 
-![Wallet Connected State](./screenshots/wallet-connected.png)
+### 2. Balance Displayed
+![Balance Displayed](./public/screenshots/balance-displayed.png)
 
-### 2. Successful Testnet Transaction Approval
-*Shows the Freighter pop-up asking for transaction signing and the toast notification for "İşlem Freighter cüzdanınızda onay bekliyor...".*
+### 3. Successful Testnet Transaction
+![Successful Testnet Transaction](./public/screenshots/successful-transaction.png)
 
-![Freighter Signing Prompt](./screenshots/freighter-signing.png)
-
-### 3. Transaction Result & Hash Feedback
-*Shows the green success toast notification containing the transaction hash and the newly added entry in the "Son Bağışlarınız" (Recent Donations) table.*
-
-![Transaction Success Feedback](./screenshots/transaction-success.png)
+### 4. The Transaction Result is Shown to the User
+![The Transaction Result is Shown to the User](./public/screenshots/transaction-result.png)
