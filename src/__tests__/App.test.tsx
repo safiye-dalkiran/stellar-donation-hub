@@ -5,6 +5,6 @@ import App from '../App'
 describe('App', () => {
   it('renders welcome message', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { name: /Stellar Spark/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Mikro-Bağış Portalı/i })).toBeInTheDocument()
   })
 })
