@@ -135,12 +135,20 @@ export default function App() {
       const txXdr = tx.toXDR()
 
       // Sign using Freighter API
-      const signedXdr = await signTransaction(txXdr, { networkPassphrase: Networks.TESTNET })
+      const result = await signTransaction(txXdr, { networkPassphrase: Networks.TESTNET })
       
+      if (result.error) {
+        throw new Error(result.error)
+      }
+      if (!result.signedTxXdr) {
+        throw new Error('İşlem imzalanamadı.')
+      }
+
       showNotification('İşlem imzalandı. Stellar ağına gönderiliyor...', 'info')
 
       // Submit to Horizon
-      const response = await server.submitTransaction(signedXdr as any)
+      const transactionToSubmit = TransactionBuilder.fromXDR(result.signedTxXdr, Networks.TESTNET)
+      const response = await server.submitTransaction(transactionToSubmit)
 
       if (response.successful) {
         showNotification('Bağış başarıyla gönderildi!', 'success')
