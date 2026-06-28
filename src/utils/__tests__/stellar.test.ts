@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { isWalletConnected, isConnected, getConnectedPublicKey, getPublicKey, fetchXlmBalance } from '../stellar'
 import { Horizon } from '@stellar/stellar-sdk'
-import { isConnected as freighterConnected, getAddress } from '@stellar/freighter-api'
+import { isConnected as freighterConnected, requestAccess } from '@stellar/freighter-api'
 
 // Mock freighter-api
 vi.mock('@stellar/freighter-api', () => ({
   isConnected: vi.fn(),
-  getAddress: vi.fn(),
+  requestAccess: vi.fn(),
 }))
 
 // Mock stellar-sdk Horizon Server
@@ -44,23 +44,31 @@ describe('Stellar Service utilities', () => {
   })
 
   describe('getConnectedPublicKey / getPublicKey', () => {
-    it('should return public key when getAddress succeeds', async () => {
+    it('should return public key when requestAccess succeeds', async () => {
       const mockKey = 'GB3A2E7VUXZ5B62K2BCO2W7PCEWIDGOM62HFL47M24V32B4FLA5T6YPX'
-      vi.mocked(getAddress).mockResolvedValue({ address: mockKey })
+      vi.mocked(freighterConnected).mockResolvedValue({ isConnected: true })
+      vi.mocked(requestAccess).mockResolvedValue({ address: mockKey })
       const result = await getConnectedPublicKey()
       expect(result).toBe(mockKey)
       expect(await getPublicKey()).toBe(mockKey)
-      expect(getAddress).toHaveBeenCalled()
+      expect(requestAccess).toHaveBeenCalled()
     })
 
-    it('should throw an error when getAddress returns empty/null', async () => {
-      vi.mocked(getAddress).mockResolvedValue({ address: '' })
+    it('should throw an error when freighterConnected is false', async () => {
+      vi.mocked(freighterConnected).mockResolvedValue({ isConnected: false })
+      await expect(getConnectedPublicKey()).rejects.toThrow('Freighter cüzdan eklentisi bulunamadı.')
+    })
+
+    it('should throw an error when requestAccess returns empty/null', async () => {
+      vi.mocked(freighterConnected).mockResolvedValue({ isConnected: true })
+      vi.mocked(requestAccess).mockResolvedValue({ address: '' })
       await expect(getConnectedPublicKey()).rejects.toThrow('Cüzdan adresi bulunamadı.')
       await expect(getPublicKey()).rejects.toThrow('Cüzdan adresi bulunamadı.')
     })
 
-    it('should throw connection error when getAddress fails', async () => {
-      vi.mocked(getAddress).mockRejectedValue(new Error('Freighter failure'))
+    it('should throw connection error when requestAccess fails', async () => {
+      vi.mocked(freighterConnected).mockResolvedValue({ isConnected: true })
+      vi.mocked(requestAccess).mockRejectedValue(new Error('Freighter failure'))
       await expect(getConnectedPublicKey()).rejects.toThrow('Freighter failure')
       await expect(getPublicKey()).rejects.toThrow('Freighter failure')
     })

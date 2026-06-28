@@ -1,5 +1,5 @@
 import { Horizon } from '@stellar/stellar-sdk'
-import { isConnected as freighterConnected, getAddress } from '@stellar/freighter-api'
+import { isConnected as freighterConnected, requestAccess } from '@stellar/freighter-api'
 
 const HORIZON_URL = 'https://horizon-testnet.stellar.org'
 const server = new Horizon.Server(HORIZON_URL)
@@ -20,9 +20,16 @@ export async function isConnected(): Promise<boolean> {
 
 export async function getConnectedPublicKey(): Promise<string> {
   try {
-    const result = await getAddress()
+    // First verify if extension is connected/installed
+    const connected = await freighterConnected()
+    if (!connected.isConnected) {
+      throw new Error('Freighter cüzdan eklentisi bulunamadı. Lütfen tarayıcı eklentisini yükleyin.')
+    }
+
+    // Request access from user to retrieve address
+    const result = await requestAccess()
     if (result.error) throw new Error(result.error)
-    if (!result.address) throw new Error('Cüzdan adresi bulunamadı.')
+    if (!result.address) throw new Error('Cüzdan adresi bulunamadı. Lütfen Freighter cüzdanınızın kilidini açın.')
     return result.address
   } catch (err: any) {
     throw new Error(err.message || 'Cüzdan bağlantısı başarısız.')
